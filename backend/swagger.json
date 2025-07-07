@@ -1,0 +1,157 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "File Upload API",
+    "version": "1.0.0",
+    "description": "API for uploading, viewing, and downloading files (PDF/images) and storing them in PostgreSQL."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
+  "paths": {
+    "/api/files/upload": {
+      "post": {
+        "tags":["File-Hub"],
+        "summary": "Upload a file",
+        "description": "Uploads a PDF or image file and stores it in PostgreSQL.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "File uploaded successfully"
+          },
+          "400": {
+            "description": "No file uploaded"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/files": {
+      "get": {
+         "tags":["File-Hub"],
+        "summary": "List all uploaded files",
+        "description": "Returns a list of all files with metadata.",
+        "responses": {
+          "200": {
+            "description": "List of files",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/File"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/files/view/{id}": {
+      "get": {
+         "tags":["File-Hub"],
+        "summary": "View file inline",
+        "description": "Returns the file so it can be viewed in the browser.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File content"
+          },
+          "404": {
+            "description": "File not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/files/download/{id}": {
+      "get": {
+         "tags":["File-Hub"],
+        "summary": "Download file",
+        "description": "Downloads the file with the given ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File downloaded"
+          },
+          "404": {
+            "description": "File not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "File": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "filename": {
+            "type": "string",
+            "example": "document.pdf"
+          },
+          "mimetype": {
+            "type": "string",
+            "example": "application/pdf"
+          },
+          "uploaded_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-07-07T10:30:00Z"
+          }
+        }
+      }
+    }
+  }
+}

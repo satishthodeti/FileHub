@@ -1,0 +1,7 @@
+CREATE TABLE files (
+  id SERIAL PRIMARY KEY,
+  filename TEXT NOT NULL,
+  mimetype TEXT NOT NULL,
+  filedata BYTEA NOT NULL,
+  uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
